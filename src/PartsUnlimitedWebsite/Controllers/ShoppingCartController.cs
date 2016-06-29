@@ -42,7 +42,7 @@ namespace PartsUnlimited.Controllers
 
             var costSummary = new OrderCostSummary
             {
-                CartSubTotal = subTotal.ToString("C"),
+                CartItemsTotal = subTotal.ToString("C"),
                 CartShipping = shipping.ToString("C"),
                 CartTax = tax.ToString("C"),
                 CartTotal = total.ToString("C")

@@ -22,8 +22,6 @@ namespace PartsUnlimited.Controllers
             _db = context;
         }
 
-        private const string PromoCode = "FREE";
-
         //
         // GET: /Checkout/
 
@@ -53,29 +51,21 @@ namespace PartsUnlimited.Controllers
 
             try
             {
-                if (string.Equals(formCollection["PromoCode"].FirstOrDefault(), PromoCode,
-                    StringComparison.OrdinalIgnoreCase) == false)
-                {
-                    return View(order);
-                }
-                else
-                {
-                    order.Username = HttpContext.User.GetUserName();
-                    order.OrderDate = DateTime.Now;
+                order.Username = HttpContext.User.GetUserName();
+                order.OrderDate = DateTime.Now;
 
-                    //Add the Order
-                    _db.Orders.Add(order);
+                //Add the Order
+                _db.Orders.Add(order);
 
-                    //Process the order
-                    var cart = ShoppingCart.GetCart(_db, HttpContext);
-                    cart.CreateOrder(order);
+                //Process the order
+                var cart = ShoppingCart.GetCart(_db, HttpContext);
+                cart.CreateOrder(order, formCollection["PromoCode"].FirstOrDefault());
 
-                    // Save all changes
-                    await _db.SaveChangesAsync(HttpContext.RequestAborted);
+                // Save all changes
+                await _db.SaveChangesAsync(HttpContext.RequestAborted);
 
-                    return RedirectToAction("Complete",
-                        new { id = order.OrderId });
-                }
+                return RedirectToAction("Complete",
+                    new { id = order.OrderId });                
             }
             catch
             {

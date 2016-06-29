@@ -71,17 +71,20 @@ namespace PartsUnlimited.Controllers
             }
 
             var itemsCount = order.OrderDetails.Sum(x => x.Quantity);
-            var subTotal = order.OrderDetails.Sum(x => x.Quantity * x.Product.Price);
+            var itemsTotal = order.OrderDetails.Sum(x => x.Quantity * x.Product.Price);
             var shipping = itemsCount * (decimal)5.00;
-            var tax = (subTotal + shipping) * (decimal)0.05;
-            var total = subTotal + shipping + tax;
+            var tax = (itemsTotal + shipping) * (decimal)0.05;
+            var subTotal = itemsTotal + shipping + tax;
+            var discount = (itemsTotal * (order.DiscountPercentage / 100));
 
             var costSummary = new OrderCostSummary
             {
-                CartSubTotal = subTotal.ToString("C"),
+                CartItemsTotal = itemsTotal.ToString("C"),
                 CartShipping = shipping.ToString("C"),
                 CartTax = tax.ToString("C"),
-                CartTotal = total.ToString("C")
+                CartSubTotal = subTotal.ToString("C"),
+                CartTotal = (subTotal - discount).ToString("C"),
+                CartDiscount = discount > 0 ? discount.ToString("C") : ""
             };
 
             var viewModel = new OrderDetailsViewModel

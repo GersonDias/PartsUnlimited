@@ -4,6 +4,7 @@
 using Microsoft.AspNet.Mvc.ModelBinding;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace PartsUnlimited.Models
 {
@@ -63,7 +64,25 @@ namespace PartsUnlimited.Models
 
         [BindNever]
         [ScaffoldColumn(false)]
-        public decimal Total { get; set; }
+        public decimal SubTotal { get; set; }
+
+        private decimal _total;
+        [BindNever]
+        [ScaffoldColumn(false)]
+        public decimal Total
+        {
+            get
+            {
+                return SubTotal - (SubTotal * (DiscountPercentage / 100));
+            }
+            protected set
+            {
+                _total = value;
+            }
+        }
+
+        [Required]
+        public decimal DiscountPercentage { get; set; }
 
         [BindNever]
         [ScaffoldColumn(false)]
@@ -71,5 +90,18 @@ namespace PartsUnlimited.Models
 
         [BindNever]
         public List<OrderDetail> OrderDetails { get; set; }
+
+        internal void SetDiscount(string promoCode)
+        {
+            const string PromoCode = "FREE";
+
+            if (string.IsNullOrEmpty(promoCode))
+                return;
+
+            if (string.Equals(promoCode, PromoCode, StringComparison.OrdinalIgnoreCase))
+            {
+                this.DiscountPercentage = 100;
+            }
+        }
     }
 }

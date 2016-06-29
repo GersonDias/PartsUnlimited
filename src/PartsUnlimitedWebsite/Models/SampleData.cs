@@ -215,7 +215,7 @@ namespace PartsUnlimited.Models
                             total += orderDetail.UnitPrice;
                         }
 
-                        order.Total = total;
+                        order.SubTotal = total;
                     }
                 }
 

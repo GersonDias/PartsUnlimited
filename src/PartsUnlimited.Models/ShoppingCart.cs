@@ -134,7 +134,7 @@ namespace PartsUnlimited.Models
             return total;
         }
 
-        public int CreateOrder(Order order)
+        public int CreateOrder(Order order, string promoCode = null)
         {
             decimal orderTotal = 0;
 
@@ -161,7 +161,10 @@ namespace PartsUnlimited.Models
             }
 
             // Set the order's total to the orderTotal count
-            order.Total = orderTotal;
+            order.SubTotal = orderTotal;
+
+            // Set discount of order
+            order.SetDiscount(promoCode);
 
             // Empty the shopping cart
             EmptyCart();
